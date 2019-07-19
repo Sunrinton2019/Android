@@ -1,6 +1,7 @@
 package com.kmj.sunrinton19;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,16 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class AddFragment extends Fragment {
     FloatingActionButton floatingActionButton;
     MainActivity mainActivity;
-
+    ArrayList<String> subject;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +42,10 @@ public class AddFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_add, container, false);
         mainActivity = (MainActivity) getActivity();
-
+        subject=new ArrayList<>();
+        subject.add("수학");
+        subject.add("영어");
+        saveData();
         floatingActionButton = v.findViewById(R.id.main_addbtn);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,4 +96,23 @@ public class AddFragment extends Fragment {
 //        super.onActivityResult(requestCode, resultCode, data);
 //        Log.e("path", imageFilePath);
 //    }
+public void saveData() {
+    SharedPreferences pref = mainActivity.getSharedPreferences("pref", MODE_PRIVATE);
+    SharedPreferences.Editor editor = pref.edit();
+    String json = new Gson().toJson(subject);
+    editor.putString("data", json);
+    editor.commit();
+}
+
+    public void loadData() {
+        Gson gson = new Gson();
+        SharedPreferences pref = mainActivity.getSharedPreferences("pref", MODE_PRIVATE);
+        String json = pref.getString("data", "");
+        ArrayList<String> shareditems;
+        shareditems = gson.fromJson(json, new TypeToken<ArrayList<String>>() {
+        }.getType());
+        if (shareditems != null) {
+            subject.addAll(shareditems);
+        }
+    }
 }

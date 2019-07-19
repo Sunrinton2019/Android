@@ -4,11 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -28,9 +28,9 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<Fragment> fragments;
-    ImageView iv1,iv2;
+    ImageView iv1, iv2;
     FragmentUtils fragmentUtils;
-    TextView bottom_tv1,bottom_tv2;
+    TextView bottom_tv1, bottom_tv2;
     AddFragment addFragment;
     RoomFragment roomFragment;
     ConstraintLayout ic1, ic2;
@@ -51,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ic1 = findViewById(R.id.main_bottom1);
         ic2 = findViewById(R.id.main_bottom2);
-        iv1=findViewById(R.id.main_bottom_ic1);
-        iv2=findViewById(R.id.main_bottom_ic2);
-        bottom_tv1=findViewById(R.id.main_bottom_tv1);
-        bottom_tv2=findViewById(R.id.main_bottom_tv2);
+        iv1 = findViewById(R.id.main_bottom_ic1);
+        iv2 = findViewById(R.id.main_bottom_ic2);
+        bottom_tv1 = findViewById(R.id.main_bottom_tv1);
+        bottom_tv2 = findViewById(R.id.main_bottom_tv2);
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         300);
             }
         }
-
 
 
         addFragment = new AddFragment();
@@ -121,10 +120,12 @@ public class MainActivity extends AppCompatActivity {
         imageFilePath = image.getAbsolutePath();
         return image;
     }
-    public  void sendTakePhotoIntent() {
+
+    public String sendTakePhotoIntent() {
+        File photoFile = null;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
+
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -132,14 +133,25 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (photoFile != null) {
-                 Log.e("pacc",getPackageName());
-                 Log.e("photo",photoFile.getPath());
+                Log.e("pacc", getPackageName());
+                Log.e("photo", photoFile.getPath());
 
                 photoUri = FileProvider.getUriForFile(this, "com.kmj.sunrinton19.provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
+        return photoFile.getPath();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==REQUEST_IMAGE_CAPTURE){
+            Intent intent=new Intent(MainActivity.this,AddActivity.class);
+            intent.putExtra("url",imageFilePath);
+            startActivity(intent);
+            finish();
+        }
+    }
 }
