@@ -1,5 +1,8 @@
 package com.kmj.sunrinton19;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -9,9 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +31,8 @@ public class AddActivity extends AppCompatActivity {
     Spinner spinner;
     ImageView star1,star2,star3,star4,star5;
     EditText input;
+    boolean ischeck=false;
+    Switch mSwitch;
     String subjectname="";
     ArrayList<String> subject;
     ImageView imageView;
@@ -38,9 +45,16 @@ public class AddActivity extends AppCompatActivity {
         subject=new ArrayList<>();
         imageView=findViewById(R.id.add_imageView);
         input=findViewById(R.id.add_input);
+        mSwitch=findViewById(R.id.switch1);
         star1=findViewById(R.id.add_star1);
         star2=findViewById(R.id.add_star2);
         star3=findViewById(R.id.add_star3);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ischeck=isChecked;
+            }
+        });
         addbtn=findViewById(R.id.add_btn);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +64,9 @@ public class AddActivity extends AppCompatActivity {
                 intent.putExtra("star",star);
                 intent.putExtra("name",input.getText().toString());
                 intent.putExtra("subject",subjectname);
+                if(ischeck){
+                    setAlarm(input.getText().toString());
+                }
                 setResult(1234,intent);
                 finish();
             }
@@ -61,6 +78,7 @@ public class AddActivity extends AppCompatActivity {
         adapter=new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,subject);
         spinner.setAdapter(adapter);
         subjectname=subject.get(0);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -149,5 +167,14 @@ public class AddActivity extends AppCompatActivity {
         if (shareditems != null) {
             subject.addAll(shareditems);
         }
+    }
+
+    void setAlarm(String name){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent=new Intent(AddActivity.this,MyService.class);
+        intent.putExtra("name",name);
+
+        PendingIntent pendingIntent = PendingIntent.getService(this, 1000,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, 5000, pendingIntent);
     }
 }
