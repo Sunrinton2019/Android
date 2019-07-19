@@ -2,6 +2,7 @@ package com.kmj.sunrinton19;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -19,6 +20,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     AddFragment addFragment;
     RoomFragment roomFragment;
     ConstraintLayout ic1, ic2;
-
+    ArrayList<ProblemModel> problems;
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     public static String imageFilePath;
     private Uri photoUri;
@@ -44,18 +49,20 @@ public class MainActivity extends AppCompatActivity {
     private float shake;
     private int cnt = 0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ic1 = findViewById(R.id.main_bottom1);
         ic2 = findViewById(R.id.main_bottom2);
         iv1 = findViewById(R.id.main_bottom_ic1);
         iv2 = findViewById(R.id.main_bottom_ic2);
         bottom_tv1 = findViewById(R.id.main_bottom_tv1);
         bottom_tv2 = findViewById(R.id.main_bottom_tv2);
-
+        problems = new ArrayList<>();
+        loadData();
+        Toast.makeText(this, problems.size() + "", Toast.LENGTH_SHORT).show();
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -147,20 +154,60 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_IMAGE_CAPTURE){
-            Intent intent=new Intent(MainActivity.this,AddActivity.class);
-            intent.putExtra("url",imageFilePath);
-            startActivityForResult(intent,321);
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            Intent intent = new Intent(MainActivity.this, AddActivity.class);
+            intent.putExtra("url", imageFilePath);
+            startActivityForResult(intent, 321);
 
         }
-        Log.e("result",String.valueOf(resultCode));
-        if (resultCode==1234){
-            int star=data.getIntExtra("start",0);
-            String name=data.getStringExtra("name");
-            String subject=data.getStringExtra("subject");
-            String ImageUrl=data.getStringExtra("ImageUrl");
-            Log.e("result",name);
+        Log.e("result", String.valueOf(resultCode));
+        if (resultCode == 1234) {
+            int star = data.getIntExtra("star", 0);
+            String name = data.getStringExtra("name");
+            String subject = data.getStringExtra("subject");
+            String ImageUrl = data.getStringExtra("ImageUrl");
+            Log.e("result", name);
+            problems.add(new ProblemModel(ImageUrl, star, name, subject, ""));
+            Toast.makeText(this, problems.size() + "", Toast.LENGTH_SHORT).show();
+            saveData();
 
+        }
+    }
+
+    public void saveData() {
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        String json = new Gson().toJson(problems);
+        editor.putString("problems", json);
+        editor.commit();
+    }
+
+    @Override
+    protected void onPause() {
+        saveData();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        saveData();
+
+        super.onDestroy();
+    }
+
+    public void loadData() {
+        Gson gson = new Gson();
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        String json = pref.getString("problems", "");
+
+        ArrayList<ProblemModel> shareditems;
+
+        Log.e("asdf", json);
+        shareditems = gson.fromJson(json, new TypeToken<ArrayList<ProblemModel>>() {
+        }.getType());
+        if (shareditems != null) {
+            problems.addAll(shareditems);
         }
     }
 }
