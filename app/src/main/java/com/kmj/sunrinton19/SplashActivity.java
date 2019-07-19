@@ -24,14 +24,18 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }, 2000);
         }
+        else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 2000);
+        }
 
-        // 값 저장하기
-//        private void savePreferences(){
-//            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-//            SharedPreferences.Editor editor = pref.edit();
-//            editor.putString("hi", "인사잘하네");
-//            editor.commit();
-//        }
+
 
 
     }
