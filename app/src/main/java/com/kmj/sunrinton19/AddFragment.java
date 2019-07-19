@@ -104,15 +104,5 @@ public void saveData() {
     editor.commit();
 }
 
-    public void loadData() {
-        Gson gson = new Gson();
-        SharedPreferences pref = mainActivity.getSharedPreferences("pref", MODE_PRIVATE);
-        String json = pref.getString("data", "");
-        ArrayList<String> shareditems;
-        shareditems = gson.fromJson(json, new TypeToken<ArrayList<String>>() {
-        }.getType());
-        if (shareditems != null) {
-            subject.addAll(shareditems);
-        }
-    }
+
 }

@@ -183,6 +183,7 @@
         android:gravity="center"
         android:text="확인"
         android:textColor="#fff"
+        android:id="@+id/add_btn"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

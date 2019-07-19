@@ -150,8 +150,17 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode==REQUEST_IMAGE_CAPTURE){
             Intent intent=new Intent(MainActivity.this,AddActivity.class);
             intent.putExtra("url",imageFilePath);
-            startActivity(intent);
-            finish();
+            startActivityForResult(intent,321);
+
+        }
+        Log.e("result",String.valueOf(resultCode));
+        if (resultCode==1234){
+            int star=data.getIntExtra("start",0);
+            String name=data.getStringExtra("name");
+            String subject=data.getStringExtra("subject");
+            String ImageUrl=data.getStringExtra("ImageUrl");
+            Log.e("result",name);
+
         }
     }
 }
