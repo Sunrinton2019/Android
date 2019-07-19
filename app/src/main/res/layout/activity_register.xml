@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/register_img"
+        android:layout_width="155dp"
+        android:layout_height="150dp"
+        android:src="@drawable/app_logo"
+        app:layout_constraintBottom_toTopOf="@id/register_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/register_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:lineSpacingExtra="-0.4sp"
+        android:text="당신의 이름은?"
+        android:textColor="#735733"
+        android:textSize="11.7sp"
+        app:layout_constraintBottom_toTopOf="@id/register_input"
+        app:layout_constraintLeft_toLeftOf="@id/register_input"
+        app:layout_constraintTop_toBottomOf="@id/register_img" />
+
+    <EditText
+        android:id="@+id/register_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="62dp"
+        android:maxLines="1"
+        android:layout_marginTop="10dp"
+        android:maxLength="5"
+        android:hint="이름을 입력해주세요."
+        app:layout_constraintBottom_toTopOf="@id/register_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_info" />
+
+    <TextView
+        android:id="@+id/register_btn"
+        android:layout_width="218dp"
+        android:layout_height="44dp"
+        android:background="@drawable/ic_register_btn"
+        android:gravity="center"
+        android:text="확인"
+        android:textColor="#ffffff"
+        android:layout_marginTop="78dp"
+        android:textSize="11.3sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_input" />
+</android.support.constraint.ConstraintLayout>
